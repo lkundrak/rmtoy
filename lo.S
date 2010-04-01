@@ -42,21 +42,9 @@ _putchar:
 
 ; DOS functions
 
-.GLOBAL _mcb0
-_mcb0:
-	mov ah,#0x52
-	int #0x21
-	push ds
-	; Move ES into DS
-	push es
-	pop ds
-	; Move ES:BX+2 into AX
-	sub bx,#0x02
-	mov ax,[bx]
-	; Return
-	pop ds
-	ret
-
+; Returns zero if last MCB was given,
+; the first one if 0 was given, otherwise the
+; next allocated MCB,
 .GLOBAL _nextmcb
 _nextmcb:
 	push bp
@@ -66,11 +54,14 @@ _nextmcb:
 	push ds
 	mov ds,4[bp]
 
+	cmp 4[bp],#0x00
+	je firstmcb
+
 	; 'Z' means last
 	xor ax,ax
 	xor bx,bx
 	cmpb [bx],#0x5a
-	je lastmcb
+	je returnmcb
 
 	; All other MCBs have 'M'
 	cmpb [bx],#0x4d
@@ -83,16 +74,52 @@ _nextmcb:
 	add ax,[bx]
 	inc ax
 
-lastmcb:
+checkmcb:
+	; We have this MCB in DS now
+	; check if it's allocated, otherwise recurse
+	mov ds,ax
+	cmp 0x0001,#0x0000
+	je nextmcb
+
+returnmcb:
 	pop ds
 	pop bp
 	ret
+
+nextmcb:
+	; Pick next MCB and let it be checked
+	push ds
+	call _nextmcb
+	add sp,#2
+	jmp checkmcb
+
+firstmcb:
+	; Call DOS to determine the first MCB
+	mov ah,#0x52
+	int #0x21
+	; Move ES into DS
+	push es
+	pop ds
+	; Move ES:BX+2 into AX
+	sub bx,#0x02
+	mov ax,[bx]
+	jmp checkmcb
 
 badmcb:
 	pop ds
 	push #mcberr
 	call _panic
 
+
+.DATA
+
+mcberr:
+.ASCII "Invalid MCB"
+.BYTE 0
+
+.TEXT
+
+; Get MCB's name given segment address
 .GLOBAL _mcbname
 _mcbname:
 	push bp
@@ -113,9 +140,3 @@ nmcopy:
 	pop ds
 	pop bp
 	ret
-
-.DATA
-
-mcberr:
-.ASCII "Invalid MCB"
-.BYTE 0

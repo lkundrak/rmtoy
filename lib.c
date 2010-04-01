@@ -6,7 +6,7 @@ jedna ()
 	cmd[8] = '\0';
 
 	printf ("Hello, World!\n");
-	for (mcb = mcb0 (); mcb; mcb = nextmcb (mcb)) {
+	for (mcb = nextmcb (0); mcb; mcb = nextmcb (mcb)) {
 		mcbname (mcb, cmd);
 		printf ("MCB: 0x%x: '%s'\n", mcb, cmd);
 	}
