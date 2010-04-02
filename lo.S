@@ -93,19 +93,13 @@ last:
 
 	; PID
 	mov si,#0x01
-	mov cx,#0x02
-pidcopy:
-	lodsb
-	stosb
-	loop pidcopy
+	lodsw
+	stosw
 
 	; Length
-	mov si,#0x03
-	mov cx,#0x02
-lencopy:
-	lodsb
-	stosb
-	loop lencopy
+	mov ax,0x03
+	inc ax
+	stosw
 
 	; Name
 	mov si,#0x08
