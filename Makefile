@@ -33,7 +33,22 @@ dump.com: hello$(EXT)
 clean:
 	rm -f $(OBJECTS) hello$(EXT)
 
-run: hello$(EXT)
-	mformat -i floppy.img -C -f 1440 ::
-	mcopy -i floppy.img hello.com ::
-	VBoxSDL --startvm 2bf639ed-eb6b-4519-9103-7e1da010f02b --hda msdos.vmdk --fda floppy.img
+# Testin'
+VIRT = qemu
+FLOPPY = floppy.img
+run: run.$(VIRT)
+
+$(FLOPPY):
+	mformat -i $(FLOPPY) -C -f 1440 ::
+mkfloppy: hello$(EXT) $(FLOPPY)
+	-mdel -i $(FLOPPY) ::/$<
+	mcopy -i $(FLOPPY) $< ::
+
+run.vbox: mkfloppy
+	VBoxSDL --startvm 2bf639ed-eb6b-4519-9103-7e1da010f02b --hda msdos.vmdk --fda $(FLOPPY)
+
+run.qemu: mkfloppy
+	qemu -M isapc -net nic,model=ne2k_isa -fda $(FLOPPY)
+
+run.dosbox: hello$(EXT)
+	dosbox $<
