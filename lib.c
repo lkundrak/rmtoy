@@ -1,14 +1,22 @@
+struct mcb {
+	short last;
+	short pid;
+	short len;
+	/* Need to keep this last for alignment */
+	char cmd[9];
+};
+
 int
 jedna ()
 {
-	void *mcb;
-	char cmd[9];
-	cmd[8] = '\0';
+	struct mcb mcb;
+	short para;
+	mcb.cmd[8] = '\0';
 
 	printf ("Hello, World!\n");
-	for (mcb = nextmcb (0); mcb; mcb = nextmcb (mcb)) {
-		mcbname (mcb, cmd);
-		printf ("MCB: 0x%x: '%s'\n", mcb, cmd);
+	for (para = firstmcb (0); !mcb.last; para += mcb.len + 1) {
+		getmcb (para, &mcb);
+		printf ("MCB: 0x%x: %i %x '%s'\n", para, mcb.pid, mcb.len, mcb.cmd);
 	}
 
 	return 0x666;
