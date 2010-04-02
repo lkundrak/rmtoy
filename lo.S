@@ -81,9 +81,11 @@ _getmcb:
 	je last
 	mov ax,#0x0000
 
+#ifdef DEBUG
 	; All other MCBs have 'M'
 	cmpb [bx],#0x4d
 	jne badmcb
+#endif /* DEBUG */
 
 last:
 	; Set the last flag in output struct
@@ -118,6 +120,8 @@ nmcopy:
 	pop bp
 	ret
 
+#ifdef DEBUG
+
 badmcb:
 	push es
 	pop ds
@@ -131,3 +135,5 @@ mcberr:
 .BYTE 0
 
 .TEXT
+
+#endif /* DEBUG */

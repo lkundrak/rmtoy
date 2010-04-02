@@ -12,6 +12,7 @@ AS = as86
 ASFLAGS = -0 -g
 START = main.o
 EXT = .com
+CPPFLAGS = -DDEBUG
 
 # For debug assemply dumps
 .SUFFIXES: .c .s
