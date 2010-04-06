@@ -20,10 +20,12 @@ CPPFLAGS = -DDEBUG
 	$(CC) $(CFLAGS) -o $@ -S $<
 
 # start.o needs to be first
-OBJECTS = $(START) lo.o prf.o lib.o
+OBJECTS = $(START) lo.o bus.o prf.o lib.o nic.o
 
 hello$(EXT): $(OBJECTS)
 	$(LD) $(LDFLAGS) -o $@ $^
+
+nic.o: nic.h
 
 dump: dump$(EXT)
 dump.com: hello$(EXT)

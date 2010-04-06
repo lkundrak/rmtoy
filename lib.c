@@ -38,6 +38,8 @@ bleurk ()
 {
 	printf ("Hello, World!\n");
 	jedna ();
+	printf ("\n----\n");
+	nicstart ();
 	return 0xbabe;
 }
 
