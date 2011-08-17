@@ -43,3 +43,17 @@ bleurk ()
 	return 0xbabe;
 }
 
+/* Compiler invokes call to this, when passing structure as an argument.
+ * We should never do that. A structure passed is a structure abused.
+void *
+memcpy (dest, src, len)
+	void *dest, *src;
+	int len;
+{
+	void *ret = dest;
+	panic ("Memcpy");
+	while (len--)
+		*(char *)dest++ = *(char *)src++;
+	return ret;
+}
+*/

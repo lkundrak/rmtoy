@@ -1,49 +1,53 @@
-#bcc -0 -Md -Ms -S hello.c
-#as86 -0 -b bin -o lala.out -s sym.tab hello.s
-#objdump -m i8086 -b binary -M i8086 -D --adjust-vma=0x100 bin
-
 # Dev86 setup
 CC = bcc
-CFLAGS = -0 -Md -Ms
+CFLAGS = -0 -Md -Ms -W
 #-A-O
 LD = ld86
-LDFLAGS = -0 -d -M -T0x100 -t -m
+LDFLAGS = -0 -d -T0x100
+#verbose #LDFLAGS = -0 -d -M -T0x100 -t -m
 AS = as86
 ASFLAGS = -0 -g
-START = main.o
 EXT = .com
 CPPFLAGS = -DDEBUG
+
+# All targets
+ALL = dumpvga$(EXT) hello$(EXT)
+
+# Single target, for debug runs
+RUN = hello$(EXT)
+
+# Library
+OBJECTS = lo.o dos.o bios.o bus.o prf.o vga.o
 
 # For debug assemply dumps
 .SUFFIXES: .c .s
 %.s: %.c
 	$(CC) $(CFLAGS) -o $@ -S $<
 
-# start.o needs to be first
-OBJECTS = $(START) lo.o bus.o prf.o lib.o nic.o
-
-hello$(EXT): $(OBJECTS)
+# Link executables
+.SUFFIXES: $(EXT) .o
+%$(EXT): %.o $(OBJECTS)
 	$(LD) $(LDFLAGS) -o $@ $^
 
-nic.o: nic.h
+all: $(ALL)
 
 dump: dump$(EXT)
-dump.com: hello$(EXT)
+dump.com: $(RUN) $(OBJECTS)
 	objdump -m i8086 -b binary -M i8086 -D --adjust-vma=0x100 $<
 	(dd if=/dev/zero bs=256 count=1 2>/dev/null; cat $<) |hexdump -C
 	size86 $(OBJECTS)
 
 clean:
-	rm -f $(OBJECTS) hello$(EXT)
+	rm -f $(OBJECTS) $(ALL)
 
 # Testin'
-VIRT = qemu
+VIRT = dosbox
 FLOPPY = floppy.img
 run: run.$(VIRT)
 
 $(FLOPPY):
 	mformat -i $(FLOPPY) -C -f 1440 ::
-mkfloppy: hello$(EXT) $(FLOPPY)
+mkfloppy: $(RUN) $(FLOPPY)
 	-mdel -i $(FLOPPY) ::/$<
 	mcopy -i $(FLOPPY) $< ::
 
@@ -53,5 +57,5 @@ run.vbox: mkfloppy
 run.qemu: mkfloppy
 	qemu -M isapc -net nic,model=ne2k_isa -fda $(FLOPPY)
 
-run.dosbox: hello$(EXT)
+run.dosbox: $(RUN)
 	dosbox $<

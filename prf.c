@@ -56,3 +56,11 @@ printf (format)
 			putchar (c);
 	}
 }
+
+void
+panic (wtf)
+	char *wtf;
+{
+	printf ("PANIC: %s\n", wtf);
+	exit ();
+}
