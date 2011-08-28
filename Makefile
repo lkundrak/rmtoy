@@ -11,7 +11,7 @@ EXT = .com
 CPPFLAGS = -DDEBUG
 
 # All targets
-ALL = dumpvga$(EXT) hello$(EXT)
+ALL = dumpvga$(EXT) hello$(EXT) trolol$(EXT)
 
 # Single target, for debug runs
 RUN = hello$(EXT)
@@ -22,6 +22,7 @@ OBJECTS = lo.o dos.o bios.o bus.o prf.o
 all: $(ALL)
 
 dumpvga.com: vga.o
+trolol.com: lib.o nic.o
 
 # For debug assemply dumps
 .SUFFIXES: .c .s
