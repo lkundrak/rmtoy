@@ -19,6 +19,8 @@ RUN = hello$(EXT)
 # Library
 OBJECTS = lo.o dos.o bios.o bus.o prf.o
 
+all: $(ALL)
+
 dumpvga.com: vga.o
 
 # For debug assemply dumps
@@ -30,8 +32,6 @@ dumpvga.com: vga.o
 .SUFFIXES: $(EXT) .o
 %$(EXT): %.o $(OBJECTS)
 	$(LD) $(LDFLAGS) -o $@ $^
-
-all: $(ALL)
 
 dump: dump$(EXT)
 dump.com: $(RUN) $(OBJECTS)
