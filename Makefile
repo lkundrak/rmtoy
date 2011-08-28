@@ -11,7 +11,7 @@ EXT = .com
 CPPFLAGS = -DDEBUG
 
 # All targets
-ALL = dumpvga$(EXT) hello$(EXT) trolol$(EXT)
+ALL = dumpvga$(EXT) hello$(EXT) trolol$(EXT) joystick$(EXT)
 
 # Single target, for debug runs
 RUN = hello$(EXT)
