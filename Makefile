@@ -6,7 +6,7 @@ LD = ld86
 LDFLAGS = -0 -d -T0x100
 #verbose #LDFLAGS = -0 -d -M -T0x100 -t -m
 AS = as86
-ASFLAGS = -0 -g
+ASFLAGS = -0 -g -W
 EXT = .com
 CPPFLAGS = -DDEBUG
 
