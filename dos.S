@@ -95,7 +95,8 @@ nmcopy:
 badmcb:
 	push es
 	pop ds
-	push #mcberr
+	mov bx,#mcberr
+	push bx
 	call _panic
 
 .DATA
