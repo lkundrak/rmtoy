@@ -17,7 +17,9 @@ ALL = dumpvga$(EXT) hello$(EXT)
 RUN = hello$(EXT)
 
 # Library
-OBJECTS = lo.o dos.o bios.o bus.o prf.o vga.o
+OBJECTS = lo.o dos.o bios.o bus.o prf.o
+
+dumpvga.com: vga.o
 
 # For debug assemply dumps
 .SUFFIXES: .c .s
