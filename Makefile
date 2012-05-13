@@ -11,7 +11,7 @@ EXT = .com
 CPPFLAGS = -DDEBUG
 
 # All targets
-ALL = dumpvga$(EXT) hello$(EXT) trolol$(EXT) joystick$(EXT)
+ALL = dumpvga$(EXT) hello$(EXT) trolol$(EXT) joystick$(EXT) mbrdump
 
 # Single target, for debug runs
 RUN = hello$(EXT)
@@ -23,6 +23,11 @@ all: $(ALL)
 
 dumpvga.com: vga.o
 trolol.com: lib.o nic.o
+
+mbrdump: mbrdump.o
+	$(LD) -0 -d -M -t -m -T0x7c00 -o $@ $^
+mbrdump.o: mbrdump.S
+	$(CC) $(ASFLAGS) -c -o $@ $^
 
 # For debug assemply dumps
 .SUFFIXES: .c .s
